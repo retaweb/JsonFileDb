@@ -29,7 +29,7 @@ public class DbContext : IDbContext
             fileSystem.Directory.CreateDirectory(jsonDirectory);
         }
 
-        foreach (string jsonPath in fileSystem.Directory.GetFiles(jsonDirectory))
+        foreach (string jsonPath in fileSystem.Directory.GetFiles(jsonDirectory, "*.json"))
         {
             string jsonFileWithoutExt = Path.GetFileNameWithoutExtension(jsonPath);
             database.Add(jsonFileWithoutExt, LoadFile(jsonPath));

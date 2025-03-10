@@ -63,6 +63,27 @@ public class DbContextTests
         Console.WriteLine(dbContext.GetDatabase()["TestEntity1"]);
         Console.WriteLine(dbContext.GetDatabase()["TestEntity2"]);
     }
+    [TestMethod]
+    public void Ctor_SomeOtherExtension_ShouldLoadTwoJsonFiles()
+    {
+        //ARRANGE
+        var fileSystemFake = new MockFileSystem(new Dictionary<string, MockFileData>
+        {
+            { "/jsondir/TestEntity1.json", new MockFileData("[{ \"Id\": 1 } ]") },
+            { "/jsondir/TestEntity2.json", new MockFileData("[{ \"Id\": 2 } ]") },
+            { "/jsondir/SomeOther.ext", new MockFileData("") },
+        });
+
+        //ACT
+        DbContext dbContext = new DbContext("/jsondir", fileSystemFake);
+
+        //ASSERT
+        dbContext.GetDatabase().Count.ShouldBe(2);
+        dbContext.GetDatabase()["TestEntity1"].ToString().ShouldNotBe("[]");
+        dbContext.GetDatabase()["TestEntity2"].ToString().ShouldNotBe("[]");
+        Console.WriteLine(dbContext.GetDatabase()["TestEntity1"]);
+        Console.WriteLine(dbContext.GetDatabase()["TestEntity2"]);
+    }
 
     [TestMethod]
     public void Ctor_CorruptJson_ShouldLoadOneJsonFile()
